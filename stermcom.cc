@@ -124,7 +124,6 @@ int main(int argc, char *argv[]) {
     SIG_IGN,
 #endif  // PRIVATE_DEBUG
     +[](int32_t) -> void {
-      // write(), kill(): Async-Signal-Safe
 #ifdef PRIVATE_DEBUG
       (void)write(STDOUT_FILENO, "Disconnect\n", 11);
 #endif  // PRIVATE_DEBUG
