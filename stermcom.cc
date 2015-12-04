@@ -113,23 +113,27 @@ int main(int argc, char *argv[]) {
     return EXIT_FAILURE;
   }
 
-  // +: decay operator
+#ifndef PRIVATE_DEBUG
   if (util::InitializeSignalAction(
-#ifdef PRIVATE_DEBUG
-    +[](int32_t) -> void {
-      // write(): Async-Signal-Safe
-      (void)write(STDOUT_FILENO, "Ignore signal\n", 14);
-    },
+        SIG_IGN,
+        // +: decay operator
+        +[](int32_t) -> void {
+          // When signal is caught, select() is not always waiting.
+          g_should_continue = 0;
+        }
+      ) == status_t::kFailure) return EXIT_FAILURE;
 #else
-    SIG_IGN,
+  if (util::InitializeSignalAction(
+        +[](int32_t) -> void {
+          // write(): Async-Signal-Safe
+          (void)write(STDOUT_FILENO, "Ignore signal\n", 14);
+        },
+        +[](int32_t) -> void {
+          (void)write(STDOUT_FILENO, "Disconnect\n", 11);
+          g_should_continue = 0;
+        }
+      ) == status_t::kFailure) return EXIT_FAILURE;
 #endif  // PRIVATE_DEBUG
-    +[](int32_t) -> void {
-#ifdef PRIVATE_DEBUG
-      (void)write(STDOUT_FILENO, "Disconnect\n", 11);
-#endif  // PRIVATE_DEBUG
-      // When signal is caught, select() is not always waiting.
-      g_should_continue = 0;
-    }) == status_t::kFailure) return EXIT_FAILURE;
 
   auto ret = mainLoop(fd, args);
   if (ret == status_t::kFailure) return EXIT_FAILURE;
