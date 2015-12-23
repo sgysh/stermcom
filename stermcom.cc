@@ -33,11 +33,45 @@ struct Arguments {
   uint32_t baud_rate;
 };
 
+status_t setStdinToNonblock() {
+  auto flags = fcntl(STDIN_FILENO, F_GETFL, 0);
+  if (flags == -1) return status_t::kFailure;
+
+  auto ret = fcntl(STDIN_FILENO, F_SETFL, flags | O_NONBLOCK);
+  if (ret == -1) return status_t::kFailure;
+
+  return status_t::kSuccess;
+}
+
+status_t reopenStdin() {
+  util::FileDescriptor fd("/dev/tty", O_RDONLY);
+  if (fd.IsSuccess() == false) return status_t::kFailure;
+
+  // Assign /dev/tty to STDIN_FILENO (/dev/tty is also being assigned to fd)
+  dup2(fd, STDIN_FILENO);
+
+  // fd is closed automatically
+  return status_t::kSuccess;
+}
+
 status_t mainLoop(const int32_t &tty_fd, const Arguments &args) {
   fd_set fds_r, fds_w;
   uint8_t one_char;
   std::list<uint8_t> string_buffer{};
   ssize_t rw_size;
+
+  // Support piping and redirection
+  if (setStdinToNonblock() == status_t::kFailure) return status_t::kFailure;
+  while (true) {
+    rw_size = read(STDIN_FILENO, &one_char, 1);
+    if (rw_size > 0) {
+      string_buffer.push_back(one_char);
+    } else {
+      break;
+    }
+  }
+  if (reopenStdin() == status_t::kFailure) return status_t::kFailure;
+
   util::TerminalInterface stdin_term(STDIN_FILENO), tty_term(tty_fd);
 
   if (stdin_term.SetRawMode() == status_t::kFailure)
