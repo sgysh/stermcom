@@ -120,6 +120,10 @@ status_t mainLoop(const int32_t &tty_fd, const Arguments &args) {
     if (FD_ISSET(tty_fd, &fds_r)) {
       uint8_t tty_read_buffer;
       rw_size = read(tty_fd, &tty_read_buffer, 1);
+      if (rw_size == 0) {
+        printf("The terminal is closed\n");
+        break;
+      }
       if (rw_size > 0) write(STDOUT_FILENO, &tty_read_buffer, 1);
     }
   }
