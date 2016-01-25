@@ -6,6 +6,7 @@
  ****************************************************************************/
 #include <fcntl.h>
 #include <libgen.h>
+#include <sys/file.h>
 #include <sys/select.h>
 #include <unistd.h>
 
@@ -150,6 +151,11 @@ int main(int argc, char *argv[]) {
   }
   if (!isatty(fd)) {
     printf("%s is not a terminal\n", argv[2]);
+    return EXIT_FAILURE;
+  }
+
+  if (flock(fd, LOCK_EX | LOCK_NB) == -1) {
+    printf("cannot place an exclusive lock on %s\n", argv[2]);
     return EXIT_FAILURE;
   }
 
