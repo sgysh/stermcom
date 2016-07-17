@@ -6,6 +6,7 @@
  ****************************************************************************/
 #include "file_descriptor.h"
 
+#include <cerrno>
 #include <fcntl.h>
 #include <unistd.h>
 
@@ -25,7 +26,11 @@ std::shared_ptr<int32_t> openFd(const char *pathname, int32_t flags) {
 }  // namespace
 
 FileDescriptor::FileDescriptor(const char *pathname, int32_t flags)
-  : stored_fd_(openFd(pathname, flags)) {
+  : error_message_(),
+    stored_fd_() {
+  errno = 0;
+  stored_fd_ = openFd(pathname, flags);
+  error_message_ = strerror(errno);
 }
 
 FileDescriptor::~FileDescriptor() {
@@ -35,6 +40,10 @@ FileDescriptor::~FileDescriptor() {
 bool FileDescriptor::IsSuccess() const {
   if (*stored_fd_ == -1) return false;
   return true;
+}
+
+std::string FileDescriptor::GetErrorMessage() const {
+  return error_message_;
 }
 
 FileDescriptor::operator int32_t() const {

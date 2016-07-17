@@ -147,6 +147,7 @@ int main(int argc, char *argv[]) {
   util::FileDescriptor fd(argv[2], O_RDWR | O_NOCTTY | O_NONBLOCK);
   if (fd.IsSuccess() == false) {
     printf("cannot open the file %s\n", argv[2]);
+    printf("Message: %s\n", fd.GetErrorMessage().c_str());
     return EXIT_FAILURE;
   }
   if (!isatty(fd)) {

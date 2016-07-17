@@ -8,6 +8,7 @@
 #define FILE_DESCRIPTOR_H_
 
 #include <cstdint>
+#include <cstring>
 #include <memory>
 
 namespace util {
@@ -19,9 +20,11 @@ class FileDescriptor final {
   ~FileDescriptor();
 
   bool IsSuccess() const;
+  std::string GetErrorMessage() const;
   operator int32_t() const;
 
  private:
+  std::string error_message_;
   std::shared_ptr<int32_t> stored_fd_;
 };
 
