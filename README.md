@@ -14,7 +14,7 @@ MIT
 
     make
     sudo make install
-    
+
 If you do not have permissions to access the device node, you might want to add yourself to the dialout group.
 
     sudo adduser $USER dialout
@@ -27,15 +27,19 @@ If you do not have permissions to access the device node, you might want to add 
 
 ##Usage
 
-    stermcom baud_rate device_node
+    stermcom [-h] [-b baud_rate] device_node
 
 Type Ctrl-x to exit this program
 
+####Using external history
+
+    stermcom -h device_node
+
 ####Piping
 
-    echo "command" | stermcom baud_rate device_node
+    echo "command" | stermcom -b baud_rate device_node
 
 ####Redirection
 
-    stermcom baud_rate device_node < commands.txt
+    stermcom -b baud_rate device_node < commands.txt
 
