@@ -26,6 +26,13 @@ const std::vector<uint8_t> kKeycodeDown{0x1b, 0x5b, 0x42};
 const std::vector<uint8_t> kKeycodeRight{0x1b, 0x5b, 0x43};
 const std::vector<uint8_t> kKeycodeLeft{0x1b, 0x5b, 0x44};
 
+struct KeyRecord {
+  const std::vector<uint8_t> keys;
+  const key_t                type;
+  uint32_t                   index;
+  bool                       is_matched;
+};
+
 // non-blocking
 bool isReadable(const int32_t &fd) {
   fd_set fds_r;
@@ -52,23 +59,16 @@ ReadKeyResult ReadKey(const int32_t &fd) {
   ReadKeyResult result{};
   result.key_type = key_t::kOther;
 
-  std::list<std::pair<std::vector<uint8_t>, key_t>> key_table;
-  key_table.push_back(std::make_pair(kKeycodeCtrlX, key_t::kCtrlX));
-  key_table.push_back(std::make_pair(kKeycodeCtrlR, key_t::kCtrlR));
-  key_table.push_back(std::make_pair(kKeycodeEnter, key_t::kEnter));
-  key_table.push_back(std::make_pair(kKeycodeDel,   key_t::kDel  ));
-  key_table.push_back(std::make_pair(kKeycodeEsc,   key_t::kEsc  ));
-  key_table.push_back(std::make_pair(kKeycodeUp,    key_t::kUp   ));
-  key_table.push_back(std::make_pair(kKeycodeDown,  key_t::kDown ));
-  key_table.push_back(std::make_pair(kKeycodeRight, key_t::kRight));
-  key_table.push_back(std::make_pair(kKeycodeLeft,  key_t::kLeft ));
-
-  std::list<int32_t> index_list;
-  std::list<bool>    matched_list;
-  for (auto k : key_table) {
-    index_list.push_back(0);
-    matched_list.push_back(true);
-  }
+  std::list<KeyRecord> key_table;
+  key_table.push_back({kKeycodeCtrlX, key_t::kCtrlX, 0, true});
+  key_table.push_back({kKeycodeCtrlR, key_t::kCtrlR, 0, true});
+  key_table.push_back({kKeycodeEnter, key_t::kEnter, 0, true});
+  key_table.push_back({kKeycodeDel,   key_t::kDel  , 0, true});
+  key_table.push_back({kKeycodeEsc,   key_t::kEsc  , 0, true});
+  key_table.push_back({kKeycodeUp,    key_t::kUp   , 0, true});
+  key_table.push_back({kKeycodeDown,  key_t::kDown , 0, true});
+  key_table.push_back({kKeycodeRight, key_t::kRight, 0, true});
+  key_table.push_back({kKeycodeLeft,  key_t::kLeft , 0, true});
 
   while (true) {
     if (!isReadable(fd)) break;
@@ -77,24 +77,23 @@ ReadKeyResult ReadKey(const int32_t &fd) {
     if (size != 1) break;
     result.read_keys.push_back(read_char);
 
-    auto index_list_itr   = index_list.begin();
-    auto matched_list_itr = matched_list.begin();
-    for (auto key_table_itr = key_table.begin(); key_table_itr != key_table.end();
-         ++key_table_itr, ++index_list_itr, ++matched_list_itr) {
-      if (*matched_list_itr == true) {
-        if (read_char == *((*key_table_itr).first.begin() + *index_list_itr)) {
-          ++(*index_list_itr);
+    for (auto key_table_itr = key_table.begin();
+         key_table_itr != key_table.end(); ++key_table_itr) {
+      if (key_table_itr->is_matched == true) {
+        if (read_char == *(key_table_itr->keys.begin() + key_table_itr->index)) {
+          ++key_table_itr->index;
         } else {
-          *matched_list_itr = false;
+          key_table_itr->is_matched = false;
         }
-        if ((*key_table_itr).first.begin() + *index_list_itr == ((*key_table_itr).first).end()) {
-          result.key_type = (*key_table_itr).second;
+        if (key_table_itr->keys.begin() + key_table_itr->index == key_table_itr->keys.end()) {
+          result.key_type = key_table_itr->type;
         }
       }
     }
 
-    auto matched_count = std::count_if(matched_list.begin(), matched_list.end(),
-                                       [](bool m) -> bool { return m; });
+    auto matched_count = std::count_if(
+        key_table.begin(), key_table.end(),
+        [](KeyRecord key_record) -> bool { return key_record.is_matched; });
     if (matched_count == 0 || matched_count == 1) break;
   }
 
