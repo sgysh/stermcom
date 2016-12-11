@@ -33,7 +33,7 @@ common::status_t HistoryWriter::Write() {
 
   if (!ofs.is_open()) return common::status_t::kFailure;
 
-  for (auto c : history_buffer_) {
+  for (const auto &c : history_buffer_) {
     ofs << c;
   }
   ofs << std::endl;

@@ -34,7 +34,7 @@ common::status_t overwriteFile(const std::string &file_name,
   std::ofstream ofs(file_name, std::ios::trunc);
   if (!ofs.is_open()) return common::status_t::kFailure;
 
-  for (auto line : line_list) {
+  for (const auto &line : line_list) {
       ofs << line << std::endl;
   }
 

@@ -61,7 +61,7 @@ std::list<uint8_t> HistoryReader::At() {
   if (!is_searching_) return char_list;
   if (history_list_itr_ == history_list_.end()) return char_list;
 
-  for (auto c : *history_list_itr_) {
+  for (const auto &c : *history_list_itr_) {
     char_list.push_back(c);
   }
 

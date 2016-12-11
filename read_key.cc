@@ -77,16 +77,15 @@ ReadKeyResult ReadKey(const int32_t &fd) {
     if (size != 1) break;
     result.read_keys.push_back(read_char);
 
-    for (auto key_table_itr = key_table.begin();
-         key_table_itr != key_table.end(); ++key_table_itr) {
-      if (key_table_itr->is_matched == true) {
-        if (read_char == *(key_table_itr->keys.begin() + key_table_itr->index)) {
-          ++key_table_itr->index;
+    for (auto &key_record : key_table) {
+      if (key_record.is_matched == true) {
+        if (read_char == *(key_record.keys.begin() + key_record.index)) {
+          ++key_record.index;
         } else {
-          key_table_itr->is_matched = false;
+          key_record.is_matched = false;
         }
-        if (key_table_itr->keys.begin() + key_table_itr->index == key_table_itr->keys.end()) {
-          result.key_type = key_table_itr->type;
+        if (key_record.keys.begin() + key_record.index == key_record.keys.end()) {
+          result.key_type = key_record.type;
         }
       }
     }
