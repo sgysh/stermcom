@@ -31,7 +31,7 @@ class HistoryReader final {
  private:
   common::status_t ReadHistoryFile();
 
-  std::string history_path_;
+  std::string path_to_history_;
   bool is_searching_;
   uint32_t pre_str_size_;
   std::list<std::string> history_list_;

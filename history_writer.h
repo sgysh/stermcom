@@ -26,7 +26,7 @@ class HistoryWriter final {
   common::status_t Write();
 
  private:
-  std::string history_path_;
+  std::string path_to_history_;
   std::list<uint8_t> history_buffer_;
 };
 
