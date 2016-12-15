@@ -270,10 +270,11 @@ status_t mainLoop(const int32_t &tty_fd, const Options &opts) {
     }
   }
 
-  if (opts.use_external_history &&
-      util::ResizeFile(history_file_path, kMaxHistoryLine) ==
-          status_t::kFailure) {
-    printf("Fail to resize the history file\n");
+  if (opts.use_external_history && util::FileExists(history_file_path)) {
+    if (util::ResizeFile(history_file_path, kMaxHistoryLine) ==
+        status_t::kFailure) {
+      printf("Fail to resize the history file\n");
+    }
   }
 
   return status_t::kSuccess;

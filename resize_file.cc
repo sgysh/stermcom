@@ -6,6 +6,8 @@
  ****************************************************************************/
 #include "resize_file.h"
 
+#include <sys/stat.h>
+
 #include <fstream>
 #include <list>
 
@@ -42,6 +44,11 @@ common::status_t overwriteFile(const std::string &file_name,
 }
 
 }  // namespace
+
+bool FileExists(const std::string &path) {
+  struct stat buf;
+  return (stat(path.c_str(), &buf) == 0);
+}
 
 common::status_t ResizeFile(const std::string &file_name, int32_t size) {
   auto line_list = readFile(file_name);
