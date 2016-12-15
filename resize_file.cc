@@ -15,8 +15,8 @@ namespace util {
 
 namespace {
 
-std::list<std::string> readFile(const std::string &file_name) {
-  std::ifstream ifs(file_name, std::ios::in);
+std::list<std::string> readFile(const std::string &path) {
+  std::ifstream ifs(path, std::ios::in);
   std::list<std::string> line_list{};
   std::string str;
 
@@ -29,11 +29,11 @@ std::list<std::string> readFile(const std::string &file_name) {
   return line_list;
 }
 
-common::status_t overwriteFile(const std::string &file_name,
+common::status_t overwriteFile(const std::string &path,
                                const std::list<std::string> &line_list) {
   if (line_list.empty()) return common::status_t::kFailure;
 
-  std::ofstream ofs(file_name, std::ios::trunc);
+  std::ofstream ofs(path, std::ios::trunc);
   if (!ofs.is_open()) return common::status_t::kFailure;
 
   for (const auto &line : line_list) {
@@ -50,8 +50,8 @@ bool FileExists(const std::string &path) {
   return (stat(path.c_str(), &buf) == 0);
 }
 
-common::status_t ResizeFile(const std::string &file_name, int32_t size) {
-  auto line_list = readFile(file_name);
+common::status_t ResizeFile(const std::string &path, int32_t size) {
+  auto line_list = readFile(path);
   if (line_list.empty()) return common::status_t::kFailure;
 
   auto origin_size = line_list.size();
@@ -61,7 +61,7 @@ common::status_t ResizeFile(const std::string &file_name, int32_t size) {
     line_list.pop_front();
   }
 
-  return overwriteFile(file_name, line_list);
+  return overwriteFile(path, line_list);
 }
 
 }  // namespace util

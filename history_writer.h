@@ -18,7 +18,7 @@ namespace util {
 class HistoryWriter final {
  public:
   HistoryWriter() = delete;
-  explicit HistoryWriter(const std::string &file_name);
+  explicit HistoryWriter(const std::string &path);
   ~HistoryWriter();
 
   void AddStr(std::list<uint8_t> str);
@@ -26,7 +26,7 @@ class HistoryWriter final {
   common::status_t Write();
 
  private:
-  std::string history_file_name_;
+  std::string history_path_;
   std::list<uint8_t> history_buffer_;
 };
 

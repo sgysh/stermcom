@@ -16,8 +16,8 @@ const uint8_t kKeycodeDel = 0x7f;
 
 }  // namespace
 
-HistoryReader::HistoryReader(const std::string &file_name)
-  : history_file_name_(file_name),
+HistoryReader::HistoryReader(const std::string &path)
+  : history_path_(path),
     is_searching_(false),
     pre_str_size_(0),
     history_list_(),
@@ -89,7 +89,7 @@ std::list<uint8_t> HistoryReader::ClearHistoryLine() {
 }
 
 common::status_t HistoryReader::ReadHistoryFile() {
-  std::ifstream ifs(history_file_name_, std::ios::in);
+  std::ifstream ifs(history_path_, std::ios::in);
   std::string str;
 
   if (!ifs.is_open()) return common::status_t::kFailure;

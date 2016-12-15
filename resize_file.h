@@ -14,7 +14,7 @@
 namespace util {
 
 bool FileExists(const std::string &path);
-common::status_t ResizeFile(const std::string &file_name, int32_t size);
+common::status_t ResizeFile(const std::string &path, int32_t size);
 
 }  // namespace util
 

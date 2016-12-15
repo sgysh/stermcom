@@ -10,8 +10,8 @@
 
 namespace util {
 
-HistoryWriter::HistoryWriter(const std::string &file_name)
-  : history_file_name_(file_name),
+HistoryWriter::HistoryWriter(const std::string &path)
+  : history_path_(path),
     history_buffer_() {
 }
 
@@ -29,7 +29,7 @@ void HistoryWriter::PopBack() {
 common::status_t HistoryWriter::Write() {
   if (history_buffer_.empty()) return common::status_t::kSuccess;
 
-  std::ofstream ofs(history_file_name_, std::ios::app);
+  std::ofstream ofs(history_path_, std::ios::app);
 
   if (!ofs.is_open()) return common::status_t::kFailure;
 

@@ -18,7 +18,7 @@ namespace util {
 class HistoryReader final {
  public:
   HistoryReader() = delete;
-  explicit HistoryReader(const std::string &file_name);
+  explicit HistoryReader(const std::string &path);
   ~HistoryReader();
 
   void StartSearch();
@@ -31,7 +31,7 @@ class HistoryReader final {
  private:
   common::status_t ReadHistoryFile();
 
-  std::string history_file_name_;
+  std::string history_path_;
   bool is_searching_;
   uint32_t pre_str_size_;
   std::list<std::string> history_list_;
