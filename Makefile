@@ -26,7 +26,9 @@ clean:
 	$(RM) -v $(TARGET) $(OBJS)
 
 install:
+	mkdir -p $(INSTALLBINPATH)
 	cp $(TARGET) $(INSTALLBINPATH)
+	mkdir -p $(INSTALLMAN1PATH)
 	cp $(TARGET).1 $(INSTALLMAN1PATH)
 
 uninstall:
