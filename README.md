@@ -1,16 +1,16 @@
-#stermcom
+# stermcom
 terminal emulator
 
 by Yoshinori Sugino
 
 ---
 
-##License
+## License
 MIT
 
 ---
 
-##How to install
+## How to install
 
     make
     sudo make install
@@ -19,27 +19,27 @@ If you do not have permissions to access the device node, you might want to add 
 
     sudo adduser $USER dialout
 
-##How to uninstall
+## How to uninstall
 
     sudo make uninstall
 
 ---
 
-##Usage
+## Usage
 
     stermcom [-h] [-b baud_rate] device_node
 
 Type Ctrl-x to exit this program
 
-####Using external history
+#### Using external history
 
     stermcom -h device_node
 
-####Piping
+#### Piping
 
     echo "command" | stermcom -b baud_rate device_node
 
-####Redirection
+#### Redirection
 
     stermcom -b baud_rate device_node < commands.txt
 
