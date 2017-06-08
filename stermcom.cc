@@ -34,8 +34,8 @@ using status_t = common::status_t;
 
 volatile sig_atomic_t g_should_continue = 1;
 
-const auto kHistoryFileName = ".stermcom_history";
-const auto kMaxHistoryLine  = 100;
+constexpr const char kHistoryFileName[] = ".stermcom_history";
+constexpr const auto kMaxHistoryLine    = 100;
 
 struct Options {
   std::string path_to_program;
@@ -129,7 +129,7 @@ status_t mainLoop(const int32_t &tty_fd, const Options &opts) {
   std::string history_file_path;
   if (opts.use_external_history) {
     if (auto path_to_home = getenv("HOME")) {
-      history_file_path = std::string(path_to_home) + "/" + kHistoryFileName;
+      history_file_path = std::string(path_to_home) + "/" + std::string(kHistoryFileName);
     } else {
       printf("Fail to get the value of HOME\n");
       return status_t::kFailure;

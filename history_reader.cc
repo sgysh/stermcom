@@ -12,7 +12,7 @@ namespace util {
 
 namespace {
 
-const uint8_t kKeycodeDel = 0x7f;
+constexpr const uint8_t kKeycodeDel = 0x7f;
 
 }  // namespace
 
