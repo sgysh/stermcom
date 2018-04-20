@@ -25,12 +25,12 @@ class TerminalInterface final {
 
   common::status_t SetRawMode();
   common::status_t SetBaudRate(const uint32_t &, direction_t);
+  common::status_t SetNow();
 
  private:
   common::status_t Flush();
   common::status_t RevertSettings();
   common::status_t BackupSettings();
-  common::status_t SetNow();
 
   int32_t fd_;
   struct termios current_terminal_, backup_terminal_;

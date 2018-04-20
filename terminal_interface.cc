@@ -53,7 +53,7 @@ TerminalInterface::~TerminalInterface() {
 
 common::status_t TerminalInterface::SetRawMode() {
   cfmakeraw(&current_terminal_);
-  return TerminalInterface::SetNow();
+  return common::status_t::kSuccess;
 }
 
 common::status_t TerminalInterface::SetBaudRate(const uint32_t &baud_rate,
@@ -68,7 +68,7 @@ common::status_t TerminalInterface::SetBaudRate(const uint32_t &baud_rate,
     if (cfsetospeed(&current_terminal_, itr->second))
       return common::status_t::kFailure;
   }
-  return TerminalInterface::SetNow();
+  return common::status_t::kSuccess;
 }
 
 common::status_t TerminalInterface::Flush() {

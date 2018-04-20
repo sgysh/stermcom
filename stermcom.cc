@@ -162,6 +162,11 @@ status_t mainLoop(const int32_t &tty_fd, const Options &opts) {
   if (tty_term.SetBaudRate(0, util::direction_t::kIn) == status_t::kFailure)
     return status_t::kFailure;
 
+  if (stdin_term.SetNow() == status_t::kFailure)
+    return status_t::kFailure;
+  if (tty_term.SetNow() == status_t::kFailure)
+    return status_t::kFailure;
+
   assert(tty_fd > STDIN_FILENO && "Assertion for select()");
 
   while (g_should_continue) {
