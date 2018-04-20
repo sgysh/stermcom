@@ -20,8 +20,6 @@ common::status_t InitializeSignalAction(void (*ignore_handler)(int32_t),
   signal_ignore.sa_handler = ignore_handler;
   signal_ignore.sa_flags   = 0;
 
-  if (sigaction(SIGHUP, &signal_ignore, nullptr) == -1)
-    return common::status_t::kFailure;
   if (sigaction(SIGINT, &signal_ignore, nullptr) == -1)
     return common::status_t::kFailure;
   if (sigaction(SIGQUIT, &signal_ignore, nullptr) == -1)
@@ -41,6 +39,8 @@ common::status_t InitializeSignalAction(void (*ignore_handler)(int32_t),
   signal_disconnect.sa_handler = disconnect_handler;
   signal_disconnect.sa_flags   = 0;
 
+  if (sigaction(SIGHUP, &signal_disconnect, nullptr) == -1)
+    return common::status_t::kFailure;
   if (sigaction(SIGTERM, &signal_disconnect, nullptr) == -1)
     return common::status_t::kFailure;
 
